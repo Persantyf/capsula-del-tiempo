@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cápsula del Tiempo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="top">
+  <div class="brand">
+    <span id="logo"></span>
+    <div>
+      <h1>Cápsula del Tiempo</h1>
+      <div id="year" class="year"></div>
+    </div>
+  </div>
+  <div id="resources" class="resources"></div>
+  <div id="buffs" class="buffs"></div>
+  <button id="mute" class="icon-btn" title="Sonido">♪</button>
+</header>
+
+<main id="game">
+  <!-- SUPERFICIE -->
+  <section id="surface" class="panel">
+    <div class="panel-head"><h2>Superficie</h2><span id="era-name" class="era-tag"></span></div>
+    <div id="goal" class="goal"></div>
+
+    <button id="gather" class="gather">
+      <span id="gather-icon"></span>
+      <span><b>Recolectar</b><small id="gather-val"></small></span>
+    </button>
+
+    <div class="section-title">
+      <span>Construcciones</span>
+      <div id="buy-amt" class="seg">
+        <button data-amt="1" class="on">x1</button><button data-amt="10">x10</button><button data-amt="max">MÁX</button>
+      </div>
+    </div>
+    <div id="buildings"></div>
+
+    <div class="section-title"><span>Mejoras</span></div>
+    <div id="upgrades" class="upgrades"></div>
+
+    <div id="era-box"></div>
+    <div id="prestige-box"></div>
+  </section>
+
+  <!-- SUBSUELO -->
+  <section id="underground" class="panel">
+    <div class="panel-head">
+      <h2>Subsuelo</h2>
+      <div class="dig-stats"><span id="dig-stats"></span><span id="combo" class="combo"></span></div>
+    </div>
+    <div id="dig-tools"></div>
+    <div id="strata"></div>
+  </section>
+
+  <!-- LATERAL -->
+  <section id="side" class="panel">
+    <nav class="tabs" id="tabs">
+      <button data-tab="luck" class="on">Suerte</button>
+      <button data-tab="finds">Hallazgos</button>
+      <button data-tab="museum">Museo</button>
+      <button data-tab="workshop">Taller</button>
+      <button data-tab="codex">Códice</button>
+    </nav>
+    <div id="tab-luck" class="tab on"></div>
+    <div id="tab-finds" class="tab"></div>
+    <div id="tab-museum" class="tab"></div>
+    <div id="tab-workshop" class="tab"></div>
+    <div id="tab-codex" class="tab"></div>
+  </section>
+</main>
+
+<div id="event" class="event"></div>
+<div id="toasts"></div>
+<div id="reveal" class="reveal"><div class="rv-kicker"></div><div class="rv-title"></div><div class="rv-sub"></div></div>
+<div id="flash"></div>
+<div id="modal" class="modal hidden"></div>
+<canvas id="fx"></canvas>
+<footer class="sig">made by p4rsan</footer>
+
+<script src="game.js"></script>
+</body>
+</html>

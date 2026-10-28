@@ -1,0 +1,332 @@
+==============================================================
+  CÁPSULA DEL TIEMPO  ·  juego incremental
+  Documento de diseño · v0.1 · 25/10/2026
+==============================================================
+
+(Nombre provisional. Alternativas: "Estratos", "Capas", "Mil Años".)
+
+
+--------------------------------------------------------------
+1. LA IDEA EN UNA FRASE
+--------------------------------------------------------------
+Construyes una civilización. Cuando haces prestigio pasan mil
+años y empiezas una nueva ENCIMA de las ruinas de la anterior.
+Lo que construiste antes se convierte en el yacimiento que
+excavas ahora.
+
+
+--------------------------------------------------------------
+2. POR QUÉ FUNCIONA (razonamiento)
+--------------------------------------------------------------
+El problema de casi todos los incrementales:
+  El prestigio es un botón de "borrar y multiplicar". Pierdes
+  todo, te dan un número (+x2) y vuelves a hacer lo mismo,
+  pero más rápido. Es satisfactorio, pero no tiene sentido ni
+  ningún tipo de narrativa.
+
+Qué cambia aquí:
+  a) El prestigio ES el juego, no un reset. Cada partida deja
+     una capa física, visible y permanente en la pantalla. El
+     jugador ve crecer su "historia" hacia abajo.
+
+  b) Decisiones con efecto a largo plazo. Lo que construyes hoy
+     decide lo que encontrarás mañana. Esto genera la pregunta
+     que mantiene enganchado: "¿qué dejo enterrado para mi
+     próxima vida?". En un incremental normal no hay nada que
+     planificar entre partidas.
+
+  c) Cada partida es distinta. Como los artefactos dependen
+     de cómo jugaste, una partida centrada en templos y otra
+     en bibliotecas dejan capas diferentes. Hay variedad sin
+     necesidad de crear mucho contenido nuevo.
+
+  d) Es muy visual y fácil de entender en un vistazo. Un
+     corte de tierra con capas se entiende en un segundo en
+     una captura (ideal para enseñarlo en Reddit / TikTok).
+
+  e) Tiene un misterio de fondo (ver punto 8), cosa rarísima
+     en el género y que da motivos para seguir jugando más
+     allá de "que suba el número".
+
+
+--------------------------------------------------------------
+3. BUCLE PRINCIPAL (una partida)
+--------------------------------------------------------------
+  1. CONSTRUIR  -> edificios que producen recursos.
+  2. AVANZAR    -> gastar recursos para pasar de era.
+  3. EXCAVAR    -> enviar arqueólogos a las capas de abajo y
+                   sacar artefactos que dan bonus permanentes
+                   durante esa partida.
+  4. TERMINAR   -> cuando el progreso se frena, elegir cómo
+                   acaba la civilización y "dejar pasar 1000
+                   años". Se crea una capa nueva.
+
+Ritmo objetivo:
+  - Primera partida: 10-15 min.
+  - Partidas medias: 20-40 min.
+  - Más adelante: partidas largas + progreso offline.
+
+
+--------------------------------------------------------------
+4. SISTEMAS
+--------------------------------------------------------------
+
+4.1 RECURSOS
+  - Comida   -> recurso base, da población.
+  - Piedra   -> se usa para construir.
+  - Cultura  -> se usa para avanzar de era y tecnologías.
+  - Arqueólogos (población asignada) -> velocidad de excavación.
+
+  Empezamos solo con Comida + Piedra en la primera versión
+  jugable, y añadimos Cultura en cuanto haya una segunda era.
+
+4.2 EDIFICIOS (primera versión jugable)
+  | Edificio   | Produce  | Deja en la ruina     |
+  |------------|----------|----------------------|
+  | Granja     | Comida   | Semillas antiguas    |
+  | Cantera    | Piedra   | Herramientas         |
+  | Templo     | Cultura  | Reliquias            |
+  | Biblioteca | Cultura+ | Pergaminos           |
+
+  Coste: base * 1.15^cantidad   (estándar del género, crece
+  exponencial; la producción crece lineal -> se frena solo
+  y empuja al prestigio de forma natural).
+
+4.3 ERAS
+  Piedra -> Bronce -> Hierro -> Medieval -> Industrial ->
+  Moderna -> Atómica -> ??? (ver punto 8)
+
+  Cada era: nuevos edificios, más producción y un aspecto
+  distinto en la capa que deja (sílex, bronce, hierro,
+  hormigón, plástico...). Las capas modernas se ven
+  claramente diferentes de las antiguas.
+
+4.4 PRESTIGIO: CÓMO ACABA LA CIVILIZACIÓN
+  Al terminar se elige un final. Es la decisión más
+  importante de la partida:
+
+  VOLCÁN (Pompeya)
+    + Conserva el 100% de los artefactos.
+    - Excavar esa capa cuesta x3.
+  INUNDACIÓN
+    + Lo orgánico (semillas, pergaminos) se conserva muy bien.
+    - Lo metálico/piedra se pierde en parte.
+  ABANDONO
+    + Excavar es x3 más rápido.
+    - Solo se conserva un 30%.
+
+  Más adelante:
+  GUERRA, PLAGA, METEORITO... cada una con su particularidad.
+
+4.5 EXCAVACIÓN
+  - Las capas están apiladas: la más reciente arriba.
+  - Para llegar a una capa tienes que atravesar las de encima
+    (o desbloquear "pozos" que permitan saltarlas).
+  - Tiempo de excavación = base * profundidad^1.5 * modif. del final.
+  - Cuanto más antigua la capa, más valen sus artefactos
+    ("pátina": multiplicador por antigüedad).
+  - Calidad del artefacto ~ raíz cuadrada de cuántos edificios
+    de ese tipo tenías. Así construir el doble no da el doble:
+    compensa diversificar.
+
+4.6 ARTEFACTOS
+  | Artefacto         | Efecto                               |
+  |-------------------|--------------------------------------|
+  | Semillas antiguas | +% comida                            |
+  | Herramientas      | +% piedra                            |
+  | Reliquias         | +% cultura                           |
+  | Pergaminos        | desbloquea tecnologías antes de tiempo |
+  | Planos (murallas) | edificios más baratos                |
+
+  Se pueden poner en un MUSEO (huecos limitados) para que el
+  bonus sea permanente entre partidas. Hay que elegir qué
+  exponer, y esa elección da profundidad a largo plazo.
+
+4.7 ENTERRAR A PROPÓSITO (se desbloquea más adelante)
+  Gastas recursos de la partida actual para sellar una cápsula
+  del tiempo. Esa cápsula aparece intacta en la siguiente.
+  Es el sistema que le da nombre al juego. Sacrificas el
+  ahora por el futuro.
+
+
+--------------------------------------------------------------
+5. INTERFAZ
+--------------------------------------------------------------
+  Pantalla dividida:
+   ┌──────────────────────┬─────────────────┐
+   │  SUPERFICIE (ahora)  │                 │
+   │  ~~~~~~~~~~~~~~~~~~  │   PANEL         │
+   │  capa 3 (Inundación) │   edificios /   │
+   │  capa 2 (Volcán)     │   arqueólogos / │
+   │  capa 1 (Abandono)   │   museo         │
+   │  ??????????????????  │                 │
+   └──────────────────────┴─────────────────┘
+
+  - Izquierda: corte vertical del terreno. Cada capa con su
+    color/textura según la era y el final. Clicar una capa ->
+    ver qué contiene y mandar arqueólogos.
+  - Derecha: lo típico del incremental (comprar, mejorar).
+  - Abajo del todo: una capa negra misteriosa desde el
+    principio (pista del misterio).
+
+
+--------------------------------------------------------------
+6. TECNOLOGÍA
+--------------------------------------------------------------
+  - HTML + CSS + JavaScript, sin dependencias. Un solo
+    index.html al principio, se abre con doble clic.
+  - Bucle de juego: 10 ticks/seg con delta de tiempo.
+  - Guardado automático en localStorage cada 10 s +
+    exportar/importar partida en texto.
+  - Progreso offline: al volver se calcula lo producido
+    (con tope de X horas).
+  - Números grandes: formato propio (1.2K, 3.4M, 5.6e12) y,
+    si pasamos de 1e308, librería break_infinity.js.
+  - Si el proyecto crece: migrar a Vite + TypeScript y
+    separar en módulos (recursos, edificios, capas, guardado).
+  - Publicar gratis: itch.io o GitHub Pages / Vercel.
+
+
+--------------------------------------------------------------
+7. PASOS (hoja de ruta)
+--------------------------------------------------------------
+  FASE 0 · Preparación                         [hecho]
+    [x] Carpeta del proyecto
+    [x] Documento de diseño (este archivo)
+    [x] Decidir estilo visual y nombre (ver punto 9)
+
+  FASE 1 · Primera versión jugable             [hecha · 25/10/2026]
+    [x] Comida + Piedra + Cultura, con tick y formato de números
+    [x] 4 edificios con coste exponencial (comprar ×1 / ×10 / Máx)
+    [x] 16 mejoras y 3 eras (Piedra, Bronce, Hierro)
+    [x] Botón "Dejar pasar 1000 años" con 3 finales + animación
+    [x] Vista de capas (apilar capas al hacer prestigio)
+    [x] Excavar a clics + arqueólogos automáticos + racha
+    [x] 4 tipos de artefacto con 4 rarezas (destello antes de romper)
+    [x] Museo (bonus permanentes) + Taller con fragmentos
+    [x] Capa de sedimentos inicial para enseñar a excavar
+    [x] Sonidos sintetizados, partículas, sacudidas
+    [x] Guardado en localStorage + progreso offline (máx 2 h)
+
+  FASE 1.5 · Dopamina, azar y look propio      [hecha · 25/10/2026]
+    Feedback: "le falta dopamina, algo random/gambling, que no
+    parezca hecho por IA, picar más visual".
+    [x] Todo en pixel art: sprites dibujados a mano (sin emojis),
+        fuentes Jersey 10 + Press Start 2P, paneles biselados
+    [x] Bloques con textura generada, grietas pixel, destellos
+    [x] Aldea animada en la superficie que crece con lo que construyes
+    [x] Críticos al picar (8 %, x5) y racha con colores
+    [x] Bloques especiales: veta de oro (x8 botín) y roca
+        inestable (explota y encadena)
+    [x] Ánforas (barro / bronce / oro) con ruleta tipo apertura de caja
+    [x] El Oráculo: tragaperras de 3 rodillos con suspense,
+        jackpot legendario y maldición de 3 calaveras
+    [x] Arriesgar artefacto: doble o nada para subir de rareza
+    [x] Cometas que cruzan la pantalla (bendiciones temporales)
+    [x] Hitos de edificios (10, 25, 50, 100… -> x2)
+    [x] 3 mejoras de taller nuevas: Pata de conejo, Alfarero, Astrónomo
+
+  FASE 1.6 · Farmeo visible y trasfondo         [hecha · 25/10/2026]
+    Feedback: "que el farmeo y lo que pasa sea más visual, que
+    tenga más trasfondo y puedas ir encontrando cosas nuevas;
+    Cantera -> Minas".
+    [x] Cantera pasa a llamarse Mina (sprite nuevo con vagoneta)
+    [x] Ciclos de producción por edificio con barra; al completarse
+        los recursos SALEN VOLANDO de la aldea al contador
+    [x] El botín de los bloques también vuela a los contadores
+    [x] Aldea viva: día y noche (4 min), sol y luna, estrellas,
+        trigo que se mece, vagonetas, chispas, humo, ventanas
+        encendidas de noche, aldeanos paseando
+    [x] Aura de color en pantalla durante las bendiciones
+    [x] CÓDICE: 34 artefactos + 8 fósiles, cada uno con su historia.
+        Lo no descubierto sale como silueta "???".
+        +1 % producción por entrada, +10 % por colección completa
+    [x] TABLILLAS: 10 fragmentos de la historia de la capa negra,
+        uno por capa, en orden, con efecto máquina de escribir.
+        La última va firmada "— P."
+    [x] Bloques nuevos: fósil (colección) y geoda (cultura + suerte)
+    [x] SUCESOS con decisión (9 distintos): mercader, sequía, río,
+        dados, grieta, fiesta, cronista, saqueadores, visión
+    [x] LOGROS (21, 6 ocultos), +2 % producción cada uno
+    -> OBJETIVO: jugar 3-4 partidas seguidas y comprobar si
+       apetece hacer "una más". Si no, se ajusta aquí antes
+       de meter contenido.
+
+  FASE 2 · Profundidad
+    [ ] Cultura + eras (Piedra -> Bronce -> Hierro)
+    [ ] Museo con huecos limitados
+    [ ] Pátina por antigüedad
+    [ ] Progreso offline
+    [ ] Estadísticas (partidas, capa más profunda...)
+
+  FASE 3 · Contenido
+    [ ] Resto de eras hasta la Moderna
+    [ ] Más finales (guerra, plaga, meteorito)
+    [ ] Enterrar a propósito (cápsulas)
+    [ ] Logros
+
+  FASE 4 · Pulido
+    [ ] Arte de las capas, animaciones de excavar
+    [ ] Sonido (picos, polvo, descubrimiento)
+    [ ] Balanceo con números reales de partidas
+    [ ] Tutorial ligero (primeros 2 minutos)
+
+  FASE 5 · Misterio + publicación
+    [ ] La capa negra y el final del juego
+    [ ] Publicar en itch.io y pedir feedback
+
+
+--------------------------------------------------------------
+8. EL MISTERIO (gancho a largo plazo)
+--------------------------------------------------------------
+  Desde la primera partida hay una capa negra al fondo que
+  no se puede excavar.
+
+  Tras muchas capas, los arqueólogos por fin llegan a ella:
+  contiene artefactos de una tecnología MÁS avanzada que
+  cualquier era que hayas alcanzado. Algunos tienen grabados
+  símbolos que coinciden con edificios que tú construiste.
+
+  Revelación: es tu propia civilización de un bucle anterior,
+  que llegó tan lejos que aprendió a enviar cosas al pasado.
+  La última era del juego consiste en construir la máquina
+  que cierra el bucle... o lo rompe (final a elegir).
+
+  (Esto es opcional y para el final. La primera versión
+  jugable no lo necesita, pero conviene tenerlo claro desde
+  ya para ir dejando pistas.)
+
+
+--------------------------------------------------------------
+9. DECISIONES (25/10/2026)
+--------------------------------------------------------------
+  1. Estilo: lo que más DOPAMINA dé y enganche.
+  2. Nombre: Cápsula del Tiempo.
+  3. Idioma: español.
+  4. Ritmo: activo, con muchas decisiones.
+  5. Para uso propio; si queda bien, se publica.
+  6. Referencia: los incrementales que sube Knekro a YouTube
+     (cortos, intensos, con mucho feedback visual).
+  7. Firma discreta "made by p4rsan" (esquina inferior dcha).
+
+  Cómo se traduce eso en el diseño:
+  - Excavar es ACTIVO: clicas bloques, se agrietan y revientan
+    con partículas, sonido y números que saltan.
+  - Racha: clicar rápido sube el daño hasta ×2.
+  - Rarezas (común / raro / épico / legendario) con colores.
+    A mitad de vida, el bloque DESTELLA con el color de la
+    rareza que esconde -> anticipación antes de romperlo.
+  - Legendario = pantallazo, sacudida, fanfarria y lluvia
+    de partículas.
+  - Decisiones constantes: qué construir (decide tus ruinas),
+    cuándo enterrar, cómo acaba la civilización, qué exponer
+    en el museo, qué mejorar en el taller, si dejar una capa
+    sin excavar para que gane pátina.
+
+  Archivos:
+    index.html  -> estructura
+    style.css   -> aspecto
+    game.js     -> toda la lógica (datos arriba del todo para
+                   tocar números fácilmente)
+
+==============================================================
